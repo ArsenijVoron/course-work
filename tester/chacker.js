@@ -1,14 +1,22 @@
 let fs = require('fs');
 let f = require('./program').getsSquares;
 
-let checker = (func) =>
+function checker (func)
 {
-    for(let i = 1; i <= fs.readdirSync('./tests').length; i++)
-        console.log(func(JSON.parse(fs.readFileSync((`./tests/test${i}.json`), 'utf8'))['test']) === JSON.parse(fs.readFileSync((`./tests/test${i}.json`), 'utf8'))['answer'] ? `test ${i} completed :)` : `test ${i} don't completed :(`);
+    let completedtests = 0;
+    for (let i = 1; i <= fs.readdirSync('./tests').length; i++)
+    {
+        if (func(JSON.parse(fs.readFileSync((`./tests/test${i}.json`), 'utf8'))['test']) === JSON.parse(fs.readFileSync((`./tests/test${i}.json`), 'utf8'))['answer'])
+        {
+            completedtests ++;
+            console.log(`test ${i} completed :)`);
+        }
+        else
+        { 
+            console.log(`test ${i} don't completed :(`);
+        }
+    }
+    console.log(`You have completed ${completedtests}/${fs.readdirSync('./tests').length} tests`)
 }
 
 checker(f);
-
-
-
-
