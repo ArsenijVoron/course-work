@@ -1,2 +1,15 @@
-let getSquares = (n) => n**2; 
-module.exports = {getSquares};
+let getSquares = (n) =>
+{
+    if(n == 1)
+        throw Error();
+    return n ** 2
+} 
+
+try 
+{
+    module.exports = {getSquares};
+}
+catch
+{
+    throw Error('Testing function is named incorrectly');
+}
