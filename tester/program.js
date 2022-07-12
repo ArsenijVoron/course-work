@@ -1,6 +1,2 @@
-let getsSquares = (n) => n**2;
-module.exports = {getsSquares};
-
-
-
-    
+let getSquares = (n) => n**2; 
+module.exports = {getSquares};

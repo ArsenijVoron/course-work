@@ -1,6 +1,8 @@
+//node .\checker.js --program getSquares
+// to install optimist: npm i optimist 
 let fs = require('fs');
-let f = require('./program').getsSquares;
-
+let opt  = require('optimist').argv;
+let f = require('./program')[opt['program']];
 function checker (func)
 {
     let completedtests = 0;
@@ -12,11 +14,9 @@ function checker (func)
             console.log(`test ${i} completed :)`);
         }
         else
-        { 
-            console.log(`test ${i} don't completed :(`);
-        }
+            console.log(`test ${i} failed :(`);
     }
-    console.log(`You have completed ${completedtests}/${fs.readdirSync('./tests').length} tests`)
+    console.log(`You have passed ${completedtests}/${fs.readdirSync('./tests').length} tests`);
 }
 
 checker(f);
