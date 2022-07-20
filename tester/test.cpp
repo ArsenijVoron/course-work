@@ -4,8 +4,5 @@ int main()
 {
     int a;
     cin >> a;
-    if(a == 3)
-       throw 'test';
-    else
-        cout << a*a << endl;
+    cout << a*a << endl;
 }
