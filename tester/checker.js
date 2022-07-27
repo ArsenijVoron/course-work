@@ -42,7 +42,7 @@ fs.open(`./results/${ParamObj['res']}`, 'w', (err) =>
 {
     if (err) throw err;
 });
-fs.writeFileSync(`./results/${ParamObj['res']}`, '<!DOCTYPE html><html><head><meta charset="utf-8"><body><style> font{font-family: Arial;} .table {width: 40%; border-collapse: collapse; } .table th {padding: 5px; background: #efefef; border: 1px solid #dddddd;}</style><table class = "table"><tr><th><font color = #696969>test</font></th><th><font color = #696969>res</font></th><th><font color = #696969>time (ms)</font></th>');
+fs.writeFileSync(`./results/${ParamObj['res']}`, '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8">\n<body>\n<style>\n.table{\nwidth: 40%;\nborder-collapse: collapse;\nfont-family: Arial;\nfont-weight: 700;\ntext-align: center;\n}\n.table td{\npadding: 5px;\nbackground: #efefef;\nborder: 1px solid #dddddd;\n}\n.h{\ncolor: #696969;\n}\n.c{\ncolor: #32CD32\n}\n.f{\ncolor: red;\n}\n</style>\n<table class = "table">\n<tr class = "h">\n<td>\ntest\n</td>\n<td>\nres\n</td>\n<td>\ntime (ms)\n</td>\n</tr>\n');
 
 function checker()
 {
@@ -84,23 +84,22 @@ function checker()
             {
                 completedtests ++;
                 console.log(`test ${i} completed :) in ${time} ms`);
-                fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr><th><font color = 'black'>${i}</font></th><th><font color = #32CD32>completed</font></th><th><font color = 'black'>${time}</font></th></tr>`);
+                fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr>\n<td>\n${i}\n</td>\n<td class = "c">\ncompleted\n</td>\n<td>\n${time}\n</td>\n</tr>\n`);
             }
             else
             {
                 console.log(`test ${i} failed :(`);
-                fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr><th><font color = 'black'>${i}</font></th><th><font color = 'red'>failed</font></th><th><font color = 'black'>${time}</font></th></tr>`);
+                fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr>\n<td>\n${i}\n</td>\n<td class = "f">\nfailed\n</td>\n<td>\n${time}\n</td>\n</tr>\n`);
             }
         }
         catch
         {
             console.log(`test ${i} failed :(`);
-            fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr><th><font color = 'black'>${i}</font></th><th><font color = 'red'>failed</font></th><th><font color = 'black'>${time}</font></th></tr>`);
+            fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr>\n<td>\n${i}\n</td>\n<td class = "f">\nfailed\n</td>\n<td\n${time}\n</td>\n</tr>\n`);
         }
     }
-    fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr><th colspan="3"><font color = #696969>completed tests : </font><font color = 'black'>${completedtests}/${fs.readdirSync(`./${ParamObj['dir']}`).length}</font></th></tr></table></head></html>`);
+    fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr>\n<td colspan="3" class = "h">\ncompleted tests : ${completedtests}/${fs.readdirSync(`./${ParamObj['dir']}`).length}\n</td>\n</tr>\n</table>\n</head>\n</html>`);
     console.log(`You have passed ${completedtests}/${fs.readdirSync(`./${ParamObj['dir']}`).length} tests`);
 }
-
 checker();
 
