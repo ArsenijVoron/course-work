@@ -1,2 +1,4 @@
-a = int(input())
-print(a**2)
+def square (a):
+    return a ** 2
+print(square(int(input())))
+

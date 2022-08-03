@@ -4,32 +4,36 @@ let time = 0;
 function toParamObj(arr) 
 {
     let obj = {};
-    if(arr.indexOf('program') == -1)
+    if(!arr.includes('program'))
         throw Error('You must enter the name of the testing file');
     else
         obj['program'] = arr[arr.indexOf('program') + 1];
-    if(arr.indexOf('len') != -1)
+    if(arr.includes('len'))
         obj['len'] = Number(arr[arr.indexOf('len') + 1]);
-    if(arr.indexOf('dir') == -1)
+    if(!arr.includes('tests'))
         throw Error('You must enter the name of the dir with tests');
     else
-        obj['dir'] = arr[arr.indexOf('dir') + 1];
-    if(arr.indexOf('res') == -1)
+        obj['tests'] = arr[arr.indexOf('tests') + 1];
+    if(!arr.includes('res'))
         throw Error('You must enter the name of the file with results');
     else
     {
         obj['res'] = arr[arr.indexOf('res') + 1];
-        if(!obj['res'].includes('.') ) 
+        if(!obj['res'].includes('.')) 
             obj['res'] += '.html';
-        else if(obj['res'].substring(obj['res'].indexOf('.') + 1) != 'csv')
-            obj['res'] =  obj['res'].substring(0, obj['res'].indexOf('.') + 1) + 'csv';
+        else if(obj['res'].substring(obj['res'].indexOf('.') + 1) != 'html')
+            obj['res'] = obj['res'].substring(0, obj['res'].indexOf('.') + 1) + 'html';
     }
-    obj['lower'] = arr.indexOf('lower') == -1 ? false : true;
-    if(arr.indexOf('time') == -1)
+    obj['lower'] = !arr.includes('lower') ? false : true;
+    if(!arr.includes('time'))
         throw Error('You must enter the timelimit (in ms) per 1 test');
     else
         obj['time'] = Number(arr[arr.indexOf('time') + 1]);
     obj['length'] = arr.indexOf('length') == -1 ? false : Number(arr[arr.indexOf('length') + 1]);
+    if(!arr.includes('answers'))
+        throw Error('You must enter the name of the dir with answers');
+    else
+        obj['answers'] = arr[arr.indexOf('answers') + 1];
     return obj;
 }
 
@@ -54,7 +58,7 @@ function checker()
             if (i == 1)
                 cp.execSync(`g++ -g ${ParamObj['program']} -o ${ParamObj['program'].substring(0, ParamObj['program'].indexOf('.'))}.exe`);
             a = new Date().getTime();
-            test = String(cp.execSync(ParamObj['program'].substring(0, ParamObj['program'].indexOf('.')), {timeout: ParamObj['time'], input: String(JSON.parse(fs.readFileSync((`./tests/test${i}.json`), 'utf8'))['test'])}));
+            cp.execSync(`${ParamObj['program'].substring(0, ParamObj['program'].indexOf('.'))} < ./${ParamObj['tests']}/test${i}.txt > ./results/answers/answer${i}.txt`, {timeout: ParamObj['time']});
             time = new Date().getTime() - a;
         }
         break;
@@ -62,7 +66,7 @@ function checker()
         give = (i) => 
         {
             a = new Date().getTime();
-            test = String(cp.execSync(`node ${ParamObj['program']}`, {timeout: ParamObj['time'], input: String(JSON.parse(fs.readFileSync((`./tests/test${i}.json`), 'utf8'))['test'])}));
+            cp.execSync(`node ${ParamObj['program']} < ./${ParamObj['tests']}/test${i}.txt > ./results/answers/answer${i}.txt`, {timeout: ParamObj['time']});
             time = new Date().getTime() - a;
         }
         break;
@@ -70,17 +74,18 @@ function checker()
         give = (i) => 
         {
             a = new Date().getTime();
-            test = String(cp.execSync(`python ${ParamObj['program']}`, {timeout: ParamObj['time'], input: String(JSON.parse(fs.readFileSync((`./tests/test${i}.json`), 'utf8'))['test'])}));
+            test = String(cp.execSync(`python ${ParamObj['program']} < ./${ParamObj['tests']}/test${i}.txt > ./results/answers/answer${i}.txt`, {timeout: ParamObj['time']}));
             time = new Date().getTime() - a;
         }
     }
-    for (let i = 1; i <= fs.readdirSync(`./${ParamObj['dir']}`).length; i++)
+    for (let i = 1; i <= fs.readdirSync(`./${ParamObj['tests']}`).length; i++)
     {
-        try
+        try 
         {
             give(i);
-            ans = String(JSON.parse(fs.readFileSync((`./${ParamObj['dir']}/test${i}.json`), 'utf8'))['answer']);
-            if (check(test, ans, ParamObj))
+            test = fs.readFileSync(`./results/answers/answer${i}.txt`, 'utf-8');
+            ans = fs.readFileSync(`./${ParamObj['answers']}/answer${i}.txt`, 'utf-8');
+            if (check(test, ans, ParamObj)) 
             {
                 completedtests ++;
                 console.log(`test ${i} completed :) in ${time} ms`);
@@ -98,8 +103,8 @@ function checker()
             fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr>\n<td>\n${i}\n</td>\n<td class = "f">\nfailed\n</td>\n<td\n${time}\n</td>\n</tr>\n`);
         }
     }
-    fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr>\n<td colspan="3" class = "h">\ncompleted tests : ${completedtests}/${fs.readdirSync(`./${ParamObj['dir']}`).length}\n</td>\n</tr>\n</table>\n</head>\n</html>`);
-    console.log(`You have passed ${completedtests}/${fs.readdirSync(`./${ParamObj['dir']}`).length} tests`);
+    fs.appendFileSync(`./results/${ParamObj['res']}`, `<tr>\n<td colspan="3" class = "h">\ncompleted tests : ${completedtests}/${fs.readdirSync(`./${ParamObj['tests']}`).length}\n</td>\n</tr>\n</table>\n</head>\n</html>`);
+    console.log(`You have passed ${completedtests}/${fs.readdirSync(`./${ParamObj['tests']}`).length} tests`);
 }
 checker();
 

@@ -1,8 +1,13 @@
 #include <iostream>
 using namespace std;
+int square (int a)
+{
+    return a * a;
+}
 int main()
 {
-    int a;
-    cin >> a;
-    cout << a*a << endl;
+    int b;
+    cin >> b;
+    cout << square(b) << endl;
+    return 0;
 }
