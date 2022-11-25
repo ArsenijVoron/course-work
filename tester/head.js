@@ -3,7 +3,7 @@ let prompt = require('prompt-and-alert').prompt;
 
 const f = (a) =>             
 {
-
+    <<+8+>>
 }
 
 console.log(f(prompt()));

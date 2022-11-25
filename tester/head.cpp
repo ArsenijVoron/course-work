@@ -2,7 +2,7 @@
 using namespace std;
 int f (int a)
 {
-    
+<<+8+>>
 }
 int main()
 {
